@@ -1,0 +1,7 @@
+{
+  "token": "<Discord bot token here; keep it secret! Keep it safe!>",
+  "inviteLink": "",
+  "prefix": "!",
+  "errorMessage": "**Oof!** Please tell my owner that something broke!",
+  "owners": []
+}
