@@ -49,7 +49,6 @@ namespace RuneBotNET {
             // Set up logging service
             services.GetRequiredService<LoggingService>();
 
-
             // Read secret token from environment variables
             // to avoid hard-coding it somewhere.
             await client.LoginAsync(TokenType.Bot, config["token"]);

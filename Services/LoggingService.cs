@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RuneBotNET.Services {
 
-    class LoggingService {
+    public class LoggingService {
 
         private readonly CommandService _commands;
         private readonly DiscordSocketClient _client;
@@ -23,6 +23,8 @@ namespace RuneBotNET.Services {
             _client.Ready += OnReadyAsync;
             _client.Log += OnLogAsync;
             _commands.Log += OnLogAsync;
+
+            _logger.LogInformation("Logging service started.");
         }
 
         private Task OnReadyAsync() {

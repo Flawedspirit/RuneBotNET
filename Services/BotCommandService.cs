@@ -16,10 +16,10 @@ namespace RuneBotNET.Services {
         private readonly ILogger _logger;
         private readonly IServiceProvider _services;
 
-        public BotCommandService(IServiceProvider services) {
+        public BotCommandService(IServiceProvider services, CommandService commands, DiscordSocketClient client) {
 
-            _commands = services.GetRequiredService<CommandService>();
-            _client = services.GetRequiredService<DiscordSocketClient>();
+            _commands = commands;
+            _client = client;
             _logger = services.GetRequiredService<ILogger<BotCommandService>>();
             _services = services;
 
@@ -27,9 +27,6 @@ namespace RuneBotNET.Services {
             _commands.CommandExecuted += CommandExecutedAsync;
         }
 
-        /**
-         * 
-         */
         public async Task InitializeAsync() {
 
             // Register modules that are public and inherit ModuleBase<T>
