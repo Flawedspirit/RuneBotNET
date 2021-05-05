@@ -3,5 +3,6 @@
   "inviteLink": "",
   "prefix": "!",
   "errorMessage": "**Oof!** Please tell my owner that something broke!",
-  "owners": []
+  "owners": [],
+  "rateLimit": 3
 }

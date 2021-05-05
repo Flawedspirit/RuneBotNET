@@ -50,6 +50,33 @@ namespace RuneBotNET.Services {
 
             var context = new SocketCommandContext(_client, message);
 
+            // Check if user has sent a command within the configured rate limit
+            // If so, tell the user when the cooldown ends and bail
+            if(RuneBot._cooldownUser.Contains(context.User as SocketGuildUser)) {
+
+                // if the user used a command, add the configured rateLimit,
+                // and see if it's greater than the current time
+                if(RuneBot._cooldownTime[RuneBot._cooldownUser.IndexOf(context.Message.Author as SocketGuildUser)]
+                .AddSeconds(Convert.ToDouble(RuneBot._config["rateLimit"])) >= DateTimeOffset.Now) {
+
+                    // It is not; let the user know how much time is left and exit
+                    double secondsLeft = (RuneBot._cooldownTime[RuneBot._cooldownUser.IndexOf(context.Message.Author as SocketGuildUser)]
+                    .AddSeconds(Convert.ToDouble(RuneBot._config["rateLimit"])) - DateTimeOffset.Now).TotalSeconds;
+
+                    await context.User.SendMessageAsync($"Please wait {secondsLeft:N1} second(s) before sending another command.");
+                    return;
+                } else {
+
+                    // It is, and the user can execute a command. Set the last executed time to right now
+                    RuneBot._cooldownTime[RuneBot._cooldownUser.IndexOf(context.Message.Author as SocketGuildUser)] = DateTimeOffset.Now;
+                }
+            } else {
+
+                // This user has never executed a command; add them to the list
+                RuneBot._cooldownTime.Add(DateTimeOffset.Now);
+                RuneBot._cooldownUser.Add(context.User as SocketGuildUser);
+            }            
+
             // Actually execute the command
             await _commands.ExecuteAsync(context, argPos, _services);
         }

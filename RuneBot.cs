@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using RuneBotNET.Services;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +17,9 @@ namespace RuneBotNET {
     class RuneBot {
 
         public static readonly IConfiguration _config;
+        public static List<DateTimeOffset> _cooldownTime;
+        public static List<SocketGuildUser> _cooldownUser;
+
         private DiscordSocketClient _client;
         private static string _logLevel;
 
@@ -38,6 +42,10 @@ namespace RuneBotNET {
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("config.json");
             _config = configBuilder.Build();
+
+            // Create cooldown system
+            _cooldownTime = new List<DateTimeOffset>();
+            _cooldownUser = new List<SocketGuildUser>();
         }
 
         public async Task MainAsyncTask() {
