@@ -15,13 +15,13 @@ namespace RuneBotNET {
 
     class RuneBot {
 
-        public static readonly IConfiguration config;
-        private DiscordSocketClient client;
-        private static string logLevel;
+        public static readonly IConfiguration _config;
+        private DiscordSocketClient _client;
+        private static string _logLevel;
 
         static void Main(string[] args = null) {
 
-            if (args.Count() != 0) logLevel = args[0];
+            if (args.Count() != 0) _logLevel = args[0];
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.File("logs/runebot.log", rollingInterval: RollingInterval.Day)
@@ -37,28 +37,28 @@ namespace RuneBotNET {
             var configBuilder = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("config.json");
-            config = configBuilder.Build();
+            _config = configBuilder.Build();
         }
 
         public async Task MainAsyncTask() {
 
             using var services = ConfigureServices();
-            var _client = services.GetRequiredService<DiscordSocketClient>();
-            client = _client;
+            var client = services.GetRequiredService<DiscordSocketClient>();
+            _client = client;
 
             // Set up logging service
             services.GetRequiredService<LoggingService>();
 
             // Read secret token from environment variables
             // to avoid hard-coding it somewhere.
-            await client.LoginAsync(TokenType.Bot, config["token"]);
-            await client.StartAsync();
+            await _client.LoginAsync(TokenType.Bot, _config["token"]);
+            await _client.StartAsync();
 
             // Load the logic needed to register commands
             await services.GetRequiredService<BotCommandService>().InitializeAsync();
 
             //Run first-time help on joining
-            client.JoinedGuild += IntroduceMyselfAsync;
+            _client.JoinedGuild += IntroduceMyselfAsync;
 
             // Keep main thread alive until the heat death of the Universe
             // or until the bot crashes/is killed. Whichever.
@@ -74,9 +74,9 @@ namespace RuneBotNET {
                 .AddSingleton<LoggingService>()
                 .AddLogging(configure => configure.AddSerilog());
 
-            if (!string.IsNullOrEmpty(logLevel)) {
+            if (!string.IsNullOrEmpty(_logLevel)) {
 
-                switch (logLevel.ToLower()) {
+                switch (_logLevel.ToLower()) {
 
                     case "debug": {
                             services.Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Debug);
@@ -113,8 +113,8 @@ namespace RuneBotNET {
                 Description = $@"Greetings! I am RuneBot, at your service.
                     Here is some information to get you started:
 
-                    My command prefix is `{config["prefix"]}`.
-                    To see a list of all my commands, type **{config["prefix"]}help**.",
+                    My command prefix is `{_config["prefix"]}`.
+                    To see a list of all my commands, type **{_config["prefix"]}help**.",
                 Timestamp = DateTime.Now,
                 Footer = new EmbedFooterBuilder {
                     Text = "A Discord bot by Flawedspirit!",

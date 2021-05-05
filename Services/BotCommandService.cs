@@ -64,7 +64,7 @@ namespace RuneBotNET.Services {
             // If the command did not execute, fall down into this error and die in a fire
             _logger.LogError($"Command -> \"{context.Message}\": {result}");
 
-            await context.Channel.SendMessageAsync(RuneBot.config["errorMessage"]);
+            await context.Channel.SendMessageAsync(RuneBot._config["errorMessage"]);
         }
     }
 }

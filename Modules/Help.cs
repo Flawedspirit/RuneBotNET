@@ -45,7 +45,7 @@ namespace RuneBotNET.Commands {
                             }
                         }
                         
-                        commandName += $"{RuneBot.config["prefix"]}{command.Aliases.First()} {aliasMessage}";
+                        commandName += $"{RuneBot._config["prefix"]}{command.Aliases.First()} {aliasMessage}";
                     }
 
                     if(!string.IsNullOrWhiteSpace(commandName)) {
